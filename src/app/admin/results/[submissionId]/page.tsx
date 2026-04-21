@@ -62,7 +62,7 @@ export default async function SubmissionDetailPage({ params }: SubmissionDetailP
 
   const testTitle = Array.isArray(submission?.tests)
     ? submission?.tests[0]?.title_uz
-    : (submission?.tests as { title_uz: string | null } | null)?.title_uz;
+    : (submission?.tests as unknown as { title_uz: string | null } | null)?.title_uz;
 
   // Har bir fikrlash turi uchun ball
   const typeScores = THINKING_TYPES.map((type) => {
