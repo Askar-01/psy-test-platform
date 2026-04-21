@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { createSupabaseServerClient } from "../../../../lib/supabase-server";
-
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 type ResultPageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ submission?: string }>;
