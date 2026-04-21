@@ -13,6 +13,11 @@ type SubmissionItem = {
   status: string | null;
   created_at: string | null;
   tests: { title_uz: string | null } | { title_uz: string | null }[] | null;
+  answers?: {
+    auto_score: number | null;
+    final_score: number | null;
+    questions: { question_order: number | null } | null;
+  }[] | null;
 };
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
@@ -27,7 +32,8 @@ export default async function AdminResultsPage() {
   const { data: submissions, error } = await supabase
     .from("submissions")
     .select(`id, student_name, class_name, language, auto_score, total_score, status, created_at,
-      tests ( title_uz )`)
+      tests ( title_uz ),
+      answers ( auto_score, final_score, questions ( question_order ) )`)
     .order("created_at", { ascending: false });
 
   const total = submissions?.length ?? 0;
