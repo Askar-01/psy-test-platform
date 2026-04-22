@@ -23,17 +23,77 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string 
   checked: { label: "Tekshirildi", color: "bg-emerald-100 text-emerald-700", dot: "bg-emerald-400" },
 };
 
-export default async function AdminResultsPage() {
+const PAGE_SIZE = 20;
+
+export default async function AdminResultsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; class?: string }>;
+}) {
+  const { page, class: classFilter } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page ?? "1"));
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
   const supabase = createSupabaseServerClient();
 
-  const { data: submissions, error } = await supabase
+  // Barcha sinflarni olish (filter uchun)
+  const { data: allClasses } = await supabase
+    .from("submissions")
+    .select("class_name")
+    .not("class_name", "is", null)
+    .order("class_name");
+
+  const uniqueClasses = [...new Set(allClasses?.map((s) => s.class_name).filter(Boolean) ?? [])].sort();
+
+  // Asosiy query (filter bilan)
+  let query = supabase
+    .from("submissions")
+    .select(`id, student_name, class_name, language, auto_score, total_score, status, created_at, tests ( title_uz )`, { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (classFilter) query = query.eq("class_name", classFilter);
+
+  const { data: submissions, error, count } = await query;
+
+  const totalCount = count ?? 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+  // Export uchun barcha submissions (filter bilan)
+  let exportQuery = supabase
     .from("submissions")
     .select(`id, student_name, class_name, language, auto_score, total_score, status, created_at, tests ( title_uz )`)
     .order("created_at", { ascending: false });
 
-  const total = submissions?.length ?? 0;
-  const checked = submissions?.filter((s) => s.status === "checked").length ?? 0;
-  const pending = submissions?.filter((s) => s.status === "pending_review").length ?? 0;
+  if (classFilter) exportQuery = exportQuery.eq("class_name", classFilter);
+  const { data: allSubmissions } = await exportQuery;
+
+  // Statistika
+  const { data: statsData } = await supabase
+    .from("submissions")
+    .select("status")
+    .then((res) => res);
+
+  const checked = statsData?.filter((s) => s.status === "checked").length ?? 0;
+  const pending = statsData?.filter((s) => s.status === "pending_review").length ?? 0;
+  const total = statsData?.length ?? 0;
+
+  function getPageNumbers(current: number, total: number): (number | "...")[] {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    if (current <= 4) return [1, 2, 3, 4, 5, "...", total];
+    if (current >= total - 3) return [1, "...", total - 4, total - 3, total - 2, total - 1, total];
+    return [1, "...", current - 1, current, current + 1, "...", total];
+  }
+
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
+
+  function buildUrl(p: number, c?: string) {
+    const params = new URLSearchParams();
+    params.set("page", String(p));
+    if (c) params.set("class", c);
+    return `/admin/results?${params.toString()}`;
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
@@ -49,13 +109,14 @@ export default async function AdminResultsPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {submissions && submissions.length > 0 && <ExportButton submissions={submissions} />}
+            {allSubmissions && allSubmissions.length > 0 && <ExportButton submissions={allSubmissions} />}
             <LogoutButton />
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-8 py-8">
+        {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           {[
             { label: "Jami", value: total, icon: "📋", color: "from-violet-500 to-purple-600" },
@@ -75,18 +136,47 @@ export default async function AdminResultsPage() {
           ))}
         </div>
 
+        {/* Sinf filtri */}
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-gray-500">Sinf:</span>
+          <Link
+            href="/admin/results?page=1"
+            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
+              !classFilter
+                ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-md"
+                : "bg-white text-gray-600 shadow-sm hover:bg-purple-50 hover:text-purple-600"
+            }`}
+          >
+            Barchasi
+          </Link>
+          {uniqueClasses.map((cls) => (
+            <Link
+              key={cls}
+              href={buildUrl(1, cls ?? undefined)}
+              className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
+                classFilter === cls
+                  ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-md"
+                  : "bg-white text-gray-600 shadow-sm hover:bg-purple-50 hover:text-purple-600"
+              }`}
+            >
+              {cls}
+            </Link>
+          ))}
+        </div>
+
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
             Xatolik: {error.message}
           </div>
         )}
 
-        <div className="mt-6 overflow-hidden rounded-3xl bg-white shadow-md">
+        {/* Table */}
+        <div className="mt-4 overflow-hidden rounded-3xl bg-white shadow-md">
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/80">
-                  {["O'quvchi", "Sinf", "Til", "Test", "Ball", "Holat", "Sana", ""].map((h) => (
+                  {["#", "O'quvchi", "Sinf", "Til", "Test", "Ball", "Holat", "Sana", ""].map((h) => (
                     <th key={h} className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-400">
                       {h}
                     </th>
@@ -95,7 +185,7 @@ export default async function AdminResultsPage() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {submissions && submissions.length > 0 ? (
-                  submissions.map((item: SubmissionItem) => {
+                  submissions.map((item: SubmissionItem, index: number) => {
                     const testTitle = Array.isArray(item.tests)
                       ? item.tests[0]?.title_uz
                       : item.tests?.title_uz;
@@ -107,6 +197,7 @@ export default async function AdminResultsPage() {
 
                     return (
                       <tr key={item.id} className="group transition hover:bg-purple-50/50">
+                        <td className="px-5 py-4 text-xs text-gray-400">{from + index + 1}</td>
                         <td className="px-5 py-4">
                           <span className="font-semibold text-gray-900">{item.student_name || "—"}</span>
                         </td>
@@ -147,15 +238,66 @@ export default async function AdminResultsPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={8} className="px-5 py-16 text-center text-gray-400">
+                    <td colSpan={9} className="px-5 py-16 text-center text-gray-400">
                       <div className="text-4xl">📭</div>
-                      <p className="mt-2">Hozircha natijalar yo'q</p>
+                      <p className="mt-2">
+                        {classFilter ? `${classFilter} sinfi uchun natijalar yo'q` : "Hozircha natijalar yo'q"}
+                      </p>
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4">
+              <p className="text-sm text-gray-400">
+                Jami <span className="font-bold text-gray-700">{totalCount}</span> ta •{" "}
+                {from + 1}–{Math.min(to + 1, totalCount)} ko'rsatilmoqda
+              </p>
+              <div className="flex items-center gap-1">
+                <Link
+                  href={buildUrl(currentPage - 1, classFilter)}
+                  className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                    currentPage === 1
+                      ? "pointer-events-none text-gray-300"
+                      : "text-gray-600 hover:bg-purple-50 hover:text-purple-600"
+                  }`}
+                >
+                  ←
+                </Link>
+                {pageNumbers.map((p, i) =>
+                  p === "..." ? (
+                    <span key={`dots-${i}`} className="px-2 text-gray-400">...</span>
+                  ) : (
+                    <Link
+                      key={p}
+                      href={buildUrl(p as number, classFilter)}
+                      className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                        p === currentPage
+                          ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-md"
+                          : "text-gray-600 hover:bg-purple-50 hover:text-purple-600"
+                      }`}
+                    >
+                      {p}
+                    </Link>
+                  )
+                )}
+                <Link
+                  href={buildUrl(currentPage + 1, classFilter)}
+                  className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                    currentPage === totalPages
+                      ? "pointer-events-none text-gray-300"
+                      : "text-gray-600 hover:bg-purple-50 hover:text-purple-600"
+                  }`}
+                >
+                  →
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </main>
