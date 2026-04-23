@@ -82,15 +82,15 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
   const total = questions?.length ?? 0;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50">
+    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
       {/* Sticky header */}
-      <div className="sticky top-0 z-10 border-b border-purple-100 bg-white/80 backdrop-blur-md">
+      <div className="sticky top-0 z-10" style={{ background: "rgba(10,10,46,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
           <div>
-            <p className="text-xs font-medium text-purple-400">Psixologik test</p>
-            <h1 className="text-lg font-black text-gray-900">{testTitle || "Test"}</h1>
+            <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>Psixologik test</p>
+            <h1 className="text-lg font-black text-white">{testTitle || "Test"}</h1>
           </div>
-          <div className="rounded-2xl bg-gradient-to-r from-violet-500 to-pink-500 px-4 py-2 text-sm font-bold text-white shadow-md">
+          <div className="rounded-2xl px-4 py-2 text-sm font-bold text-white" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}>
             {total} ta savol
           </div>
         </div>
@@ -98,12 +98,12 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
 
       <div className="mx-auto max-w-3xl px-6 py-10">
         {error && (
-          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
+          <div className="mb-6 rounded-2xl p-4" style={{ background: "rgba(255,100,100,0.15)", border: "1px solid rgba(255,100,100,0.3)", color: "#ff9999" }}>
             Xatolik: {error.message}
           </div>
         )}
 
-        <form action={submitAnswers} className="space-y-5">
+        <form action={submitAnswers} className="space-y-4">
           <input type="hidden" name="test_id" value={id} />
           <input type="hidden" name="submission_id" value={submission || ""} />
           <input type="hidden" name="language" value={language} />
@@ -116,23 +116,26 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
               return (
                 <div
                   key={question.id}
-                  className="overflow-hidden rounded-3xl bg-white shadow-md transition hover:shadow-lg"
+                  className="overflow-hidden rounded-3xl transition"
+                  style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)" }}
                 >
                   {/* Progress bar */}
-                  <div className="h-1 bg-gray-100">
+                  <div className="h-1" style={{ background: "rgba(255,255,255,0.08)" }}>
                     <div
-                      className="h-full bg-gradient-to-r from-violet-400 to-pink-400 transition-all"
-                      style={{ width: `${progress}%` }}
+                      className="h-full transition-all"
+                      style={{ width: `${progress}%`, background: "linear-gradient(90deg, #4040cc, #9020cc)" }}
                     />
                   </div>
 
                   <div className="p-6">
                     <div className="flex items-start gap-4">
-                      {/* Question number */}
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-pink-500 text-sm font-black text-white shadow-md">
+                      <div
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white shadow-md"
+                        style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)" }}
+                      >
                         {question.order_no}
                       </div>
-                      <h2 className="pt-1.5 text-base font-semibold leading-snug text-gray-800">
+                      <h2 className="pt-1.5 text-base font-semibold leading-snug text-white">
                         {questionText || "Savol matni yo'q"}
                       </h2>
                     </div>
@@ -140,11 +143,18 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                     {/* HA / YO'Q */}
                     {question.type === "yes_no" && (
                       <div className="mt-5 flex gap-3">
-                        <label className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-gray-100 py-3 text-sm font-bold text-gray-600 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 has-[:checked]:border-emerald-400 has-[:checked]:bg-emerald-50 has-[:checked]:text-emerald-700">
+                        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition has-[:checked]:shadow-lg"
+                          style={{ border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.7)" }}
+                        >
                           <input type="radio" name={`question_${question.id}`} value="yes" className="sr-only" />
+                          <style>{`
+                            input[name="question_${question.id}"][value="yes"]:checked ~ * { color: #4ade80; }
+                          `}</style>
                           {yesNoLabels.yes}
                         </label>
-                        <label className="group flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-gray-100 py-3 text-sm font-bold text-gray-600 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700 has-[:checked]:border-rose-400 has-[:checked]:bg-rose-50 has-[:checked]:text-rose-700">
+                        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition"
+                          style={{ border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.7)" }}
+                        >
                           <input type="radio" name={`question_${question.id}`} value="no" className="sr-only" />
                           {yesNoLabels.no}
                         </label>
@@ -159,7 +169,8 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                           return (
                             <label
                               key={option.id}
-                              className="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-gray-100 px-5 py-3 text-sm text-gray-700 transition hover:border-purple-300 hover:bg-purple-50 has-[:checked]:border-purple-400 has-[:checked]:bg-purple-50 has-[:checked]:font-semibold has-[:checked]:text-purple-700"
+                              className="flex cursor-pointer items-center gap-3 rounded-2xl px-5 py-3 text-sm transition has-[:checked]:font-semibold"
+                              style={{ border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
                             >
                               <input type="radio" name={`question_${question.id}`} value={option.id} className="sr-only" />
                               <span className="h-4 w-4 shrink-0 rounded-full border-2 border-current" />
@@ -174,7 +185,8 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                     {question.type === "text" && (
                       <textarea
                         name={`question_${question.id}`}
-                        className="mt-5 min-h-[100px] w-full rounded-2xl border-2 border-gray-100 bg-gray-50 px-5 py-3 text-sm outline-none transition focus:border-purple-400 focus:bg-white"
+                        className="mt-5 min-h-[100px] w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition placeholder:text-white/30"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)" }}
                         placeholder={
                           language === "ru" ? "Напишите свой ответ..."
                           : language === "kaa" ? "Jawabıńızdı jazıń..."
@@ -187,7 +199,7 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
               );
             })
           ) : (
-            <div className="rounded-3xl bg-white p-10 text-center text-gray-400 shadow-md">
+            <div className="rounded-3xl p-10 text-center" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
               Savollar topilmadi
             </div>
           )}
@@ -195,7 +207,8 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
           <div className="pt-4">
             <button
               type="submit"
-              className="w-full rounded-3xl bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 py-5 text-lg font-black text-white shadow-xl shadow-purple-200 transition hover:opacity-90 hover:shadow-purple-300 active:scale-95"
+              className="w-full rounded-3xl py-5 text-lg font-black text-white shadow-xl transition hover:opacity-90 active:scale-95"
+              style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)", border: "1px solid rgba(255,255,255,0.2)" }}
             >
               {submitLabel}
             </button>

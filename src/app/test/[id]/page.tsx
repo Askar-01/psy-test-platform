@@ -22,8 +22,8 @@ export default async function TestDetailPage({ params }: TestPageProps) {
 
   if (error || !test) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-rose-50 to-pink-100 p-10">
-        <div className="rounded-3xl border border-red-200 bg-white p-8 text-red-600 shadow-lg">
+      <main className="flex min-h-screen items-center justify-center p-10" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 100%)" }}>
+        <div className="rounded-3xl p-8 text-red-400" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,100,100,0.3)" }}>
           Test topilmadi
         </div>
       </main>
@@ -31,32 +31,35 @@ export default async function TestDetailPage({ params }: TestPageProps) {
   }
 
   return (
-    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #f5576c 100%)" }}>
-      {/* Blobs */}
+    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-32 -right-32 h-80 w-80 rounded-full bg-yellow-300 opacity-20 blur-3xl" />
-        <div className="absolute bottom-10 -left-20 h-72 w-72 rounded-full bg-blue-400 opacity-20 blur-3xl" />
+        <div className="absolute top-10 left-20 h-1 w-1 rounded-full bg-white opacity-50" />
+        <div className="absolute top-40 right-32 h-1.5 w-1.5 rounded-full bg-white opacity-40" />
+        <div className="absolute bottom-20 left-40 h-1 w-1 rounded-full bg-white opacity-60" />
+        <div className="absolute top-1/2 right-20 h-2 w-2 rounded-full bg-white opacity-30" />
       </div>
 
       <div className="relative flex min-h-screen items-center justify-center px-6 py-16">
         <div className="w-full max-w-lg">
           {/* Card */}
-          <div className="overflow-hidden rounded-3xl bg-white shadow-2xl">
-            {/* Top gradient banner */}
-            <div className="bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 px-8 py-8 text-white">
-              <div className="flex items-center gap-3">
-                <span className="text-4xl">🧠</span>
+          <div className="overflow-hidden rounded-3xl shadow-2xl" style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
+            {/* Top banner */}
+            <div className="px-8 py-8" style={{ background: "rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-3xl" style={{ background: "rgba(255,255,255,0.15)" }}>
+                  🧠
+                </div>
                 <div>
-                  <p className="text-sm font-medium text-white/70">Psixologik test</p>
-                  <h1 className="text-2xl font-black">{test.title_uz}</h1>
+                  <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,0.55)" }}>Psixologik test</p>
+                  <h1 className="text-2xl font-black text-white">{test.title_uz}</h1>
                 </div>
               </div>
               {count && (
-                <div className="mt-4 flex gap-4">
-                  <div className="rounded-xl bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
+                <div className="mt-4 flex gap-3">
+                  <div className="rounded-xl px-4 py-2 text-sm font-semibold text-white" style={{ background: "rgba(255,255,255,0.12)" }}>
                     📝 {count} ta savol
                   </div>
-                  <div className="rounded-xl bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
+                  <div className="rounded-xl px-4 py-2 text-sm font-semibold text-white" style={{ background: "rgba(255,255,255,0.12)" }}>
                     ⏱ ~{Math.ceil(count / 3)} daqiqa
                   </div>
                 </div>
@@ -65,7 +68,7 @@ export default async function TestDetailPage({ params }: TestPageProps) {
 
             <div className="p-8">
               {test.description_uz && (
-                <p className="rounded-2xl bg-purple-50 px-5 py-4 text-sm leading-relaxed text-gray-600">
+                <p className="rounded-2xl px-5 py-4 text-sm leading-relaxed" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)" }}>
                   {test.description_uz}
                 </p>
               )}
@@ -74,7 +77,7 @@ export default async function TestDetailPage({ params }: TestPageProps) {
                 <input type="hidden" name="test_id" value={test.id} />
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                  <label className="mb-2 block text-sm font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
                     👤 F.I.Sh.
                   </label>
                   <input
@@ -82,12 +85,13 @@ export default async function TestDetailPage({ params }: TestPageProps) {
                     name="student_name"
                     placeholder="Ism familiyangizni kiriting"
                     required
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50 px-5 py-3 text-sm outline-none transition focus:border-purple-400 focus:bg-white"
+                    className="w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:ring-2 focus:ring-white/20"
+                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                  <label className="mb-2 block text-sm font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
                     🏫 Sinf
                   </label>
                   <input
@@ -95,28 +99,31 @@ export default async function TestDetailPage({ params }: TestPageProps) {
                     name="class_name"
                     placeholder="Masalan: 9-A"
                     required
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50 px-5 py-3 text-sm outline-none transition focus:border-purple-400 focus:bg-white"
+                    className="w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:ring-2 focus:ring-white/20"
+                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                  <label className="mb-2 block text-sm font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
                     🌐 Til
                   </label>
                   <select
                     name="language"
                     defaultValue="uz"
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50 px-5 py-3 text-sm outline-none transition focus:border-purple-400 focus:bg-white"
+                    className="w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition focus:ring-2 focus:ring-white/20"
+                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
                   >
-                    <option value="uz">🇺🇿 O&apos;zbek</option>
-                    <option value="ru">🇷🇺 Русский</option>
-                    <option value="kaa">🏳️ Qaraqalpaqsha</option>
+                    <option value="uz" style={{ background: "#1a1a6e" }}>🇺🇿 O&apos;zbek</option>
+                    <option value="ru" style={{ background: "#1a1a6e" }}>🇷🇺 Русский</option>
+                    <option value="kaa" style={{ background: "#1a1a6e" }}>🏳️ Qaraqalpaqsha</option>
                   </select>
                 </div>
 
                 <button
                   type="submit"
-                  className="mt-2 w-full rounded-2xl bg-gradient-to-r from-violet-500 to-pink-500 py-4 font-bold text-white shadow-lg shadow-purple-200 transition hover:shadow-purple-300 hover:opacity-90 active:scale-95"
+                  className="mt-2 w-full rounded-2xl py-4 font-bold text-white shadow-lg transition hover:opacity-90 active:scale-95"
+                  style={{ background: "linear-gradient(135deg, #4040cc, #7020aa)", border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   Testni boshlash 🚀
                 </button>
@@ -124,8 +131,8 @@ export default async function TestDetailPage({ params }: TestPageProps) {
             </div>
           </div>
 
-          <p className="mt-6 text-center text-sm text-white/60">
-            ← <a href="/" className="underline underline-offset-2 hover:text-white">Testlar ro&apos;yxatiga qaytish</a>
+          <p className="mt-6 text-center text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+            ← <a href="/" className="underline underline-offset-2 hover:text-white transition">Testlar ro&apos;yxatiga qaytish</a>
           </p>
         </div>
       </div>
