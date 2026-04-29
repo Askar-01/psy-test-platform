@@ -83,6 +83,36 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
 
   return (
     <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
+      {/* Global styles for checked state */}
+      <style>{`
+        .yes-label input:checked + .yes-text {
+          color: #4ade80 !important;
+        }
+        .yes-label:has(input:checked) {
+          background: rgba(74, 222, 128, 0.15) !important;
+          border-color: #4ade80 !important;
+        }
+        .no-label:has(input:checked) {
+          background: rgba(248, 113, 113, 0.15) !important;
+          border-color: #f87171 !important;
+        }
+        .no-label input:checked + .no-text {
+          color: #f87171 !important;
+        }
+        .option-label:has(input:checked) {
+          background: rgba(129, 140, 248, 0.25) !important;
+          border-color: #818cf8 !important;
+          color: #c7d2fe !important;
+        }
+        .option-label:has(input:checked) .option-circle {
+          background: #818cf8 !important;
+          border-color: #818cf8 !important;
+        }
+        .yes-label:hover, .no-label:hover, .option-label:hover {
+          background: rgba(255,255,255,0.08) !important;
+        }
+      `}</style>
+
       {/* Sticky header */}
       <div className="sticky top-0 z-10" style={{ background: "rgba(10,10,46,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
@@ -116,13 +146,13 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
               return (
                 <div
                   key={question.id}
-                  className="overflow-hidden rounded-3xl transition"
+                  className="overflow-hidden rounded-3xl"
                   style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)" }}
                 >
                   {/* Progress bar */}
                   <div className="h-1" style={{ background: "rgba(255,255,255,0.08)" }}>
                     <div
-                      className="h-full transition-all"
+                      className="h-full"
                       style={{ width: `${progress}%`, background: "linear-gradient(90deg, #4040cc, #9020cc)" }}
                     />
                   </div>
@@ -130,7 +160,7 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                   <div className="p-6">
                     <div className="flex items-start gap-4">
                       <div
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white shadow-md"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white"
                         style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)" }}
                       >
                         {question.order_no}
@@ -143,20 +173,19 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                     {/* HA / YO'Q */}
                     {question.type === "yes_no" && (
                       <div className="mt-5 flex gap-3">
-                        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition has-[:checked]:shadow-lg"
+                        <label
+                          className="yes-label flex flex-1 cursor-pointer items-center justify-center rounded-2xl py-3 text-sm font-bold transition-all"
                           style={{ border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.7)" }}
                         >
                           <input type="radio" name={`question_${question.id}`} value="yes" className="sr-only" />
-                          <style>{`
-                            input[name="question_${question.id}"][value="yes"]:checked ~ * { color: #4ade80; }
-                          `}</style>
-                          {yesNoLabels.yes}
+                          <span className="yes-text">{yesNoLabels.yes}</span>
                         </label>
-                        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition"
+                        <label
+                          className="no-label flex flex-1 cursor-pointer items-center justify-center rounded-2xl py-3 text-sm font-bold transition-all"
                           style={{ border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.7)" }}
                         >
                           <input type="radio" name={`question_${question.id}`} value="no" className="sr-only" />
-                          {yesNoLabels.no}
+                          <span className="no-text">{yesNoLabels.no}</span>
                         </label>
                       </div>
                     )}
@@ -169,11 +198,11 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                           return (
                             <label
                               key={option.id}
-                              className="flex cursor-pointer items-center gap-3 rounded-2xl px-5 py-3 text-sm transition has-[:checked]:font-semibold"
+                              className="option-label flex cursor-pointer items-center gap-3 rounded-2xl px-5 py-3 text-sm transition-all"
                               style={{ border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
                             >
                               <input type="radio" name={`question_${question.id}`} value={option.id} className="sr-only" />
-                              <span className="h-4 w-4 shrink-0 rounded-full border-2 border-current" />
+                              <span className="option-circle h-4 w-4 shrink-0 rounded-full border-2 border-current transition-all" />
                               {optionText || "—"}
                             </label>
                           );
@@ -185,7 +214,7 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                     {question.type === "text" && (
                       <textarea
                         name={`question_${question.id}`}
-                        className="mt-5 min-h-[100px] w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition placeholder:text-white/30"
+                        className="mt-5 min-h-[100px] w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition"
                         style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)" }}
                         placeholder={
                           language === "ru" ? "Напишите свой ответ..."
