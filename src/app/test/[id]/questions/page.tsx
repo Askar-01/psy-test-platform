@@ -89,7 +89,7 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
   const total = questions?.length ?? 0;
 
   return (
-    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
+    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1d4ed8 100%)" }}>
       {/* Global styles for checked state */}
       <style>{`
         .yes-label input:checked + .yes-text {
@@ -107,22 +107,22 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
           color: #f87171 !important;
         }
         .option-label:has(input:checked) {
-          background: rgba(129, 140, 248, 0.25) !important;
-          border-color: #818cf8 !important;
-          color: #c7d2fe !important;
+          background: rgba(59, 130, 246, 0.25) !important;
+          border-color: #3b82f6 !important;
+          color: #bfdbfe !important;
         }
         .option-label:has(input:checked) .option-circle {
-          background: #818cf8 !important;
-          border-color: #818cf8 !important;
+          background: #3b82f6 !important;
+          border-color: #3b82f6 !important;
         }
         .multi-label:has(input:checked) {
-          background: rgba(74, 222, 128, 0.18) !important;
-          border-color: #4ade80 !important;
-          color: #d1fae5 !important;
+          background: rgba(59, 130, 246, 0.2) !important;
+          border-color: #3b82f6 !important;
+          color: #bfdbfe !important;
         }
         .multi-label:has(input:checked) .multi-box {
-          background: #4ade80 !important;
-          border-color: #4ade80 !important;
+          background: #3b82f6 !important;
+          border-color: #3b82f6 !important;
         }
         .multi-label:has(input:checked) .multi-tick {
           opacity: 1 !important;
@@ -133,7 +133,7 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
       `}</style>
 
       {/* Sticky header */}
-      <div className="sticky top-0 z-10" style={{ background: "rgba(10,10,46,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+      <div className="sticky top-0 z-10" style={{ background: "rgba(15,23,42,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
           <div>
             <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>Psixologik test</p>
@@ -172,7 +172,7 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
                   <div className="h-1" style={{ background: "rgba(255,255,255,0.08)" }}>
                     <div
                       className="h-full"
-                      style={{ width: `${progress}%`, background: "linear-gradient(90deg, #4040cc, #9020cc)" }}
+                      style={{ width: `${progress}%`, background: "linear-gradient(90deg, #2563eb, #1d4ed8)" }}
                     />
                   </div>
 
@@ -180,7 +180,7 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
                     <div className="flex items-start gap-4">
                       <div
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-sm font-black text-white"
-                        style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)" }}
+                        style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)" }}
                       >
                         {question.order_no}
                       </div>
@@ -285,7 +285,7 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
             <button
               type="submit"
               className="w-full rounded-3xl py-5 text-lg font-black text-white shadow-xl transition hover:opacity-90 active:scale-95"
-              style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)", border: "1px solid rgba(255,255,255,0.2)" }}
+              style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", border: "1px solid rgba(255,255,255,0.2)" }}
             >
               {submitLabel}
             </button>

@@ -32,7 +32,7 @@ const DENIED_MESSAGES: Record<string, { title: string; desc: string; back: strin
 function DeniedView({ lang }: { lang: string }) {
   const m = DENIED_MESSAGES[lang as keyof typeof DENIED_MESSAGES] ?? DENIED_MESSAGES.uz;
   return (
-    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
+    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1d4ed8 100%)" }}>
       <div className="relative flex min-h-screen items-center justify-center px-6">
         <div className="w-full max-w-md text-center">
           <div className="overflow-hidden rounded-3xl shadow-2xl" style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,100,100,0.3)" }}>
@@ -47,7 +47,7 @@ function DeniedView({ lang }: { lang: string }) {
               <Link
                 href="/"
                 className="mt-6 block w-full rounded-2xl py-4 font-bold text-white shadow-lg transition hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)", border: "1px solid rgba(255,255,255,0.2)" }}
+                style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", border: "1px solid rgba(255,255,255,0.2)" }}
               >
                 ← {m.back}
               </Link>
@@ -102,7 +102,7 @@ export default async function ResultPage({ params, searchParams }: ResultPagePro
   const m = messages[lang as keyof typeof messages] ?? messages.uz;
 
   return (
-    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
+    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1d4ed8 100%)" }}>
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute top-10 left-20 h-1 w-1 rounded-full bg-white opacity-50" />
         <div className="absolute top-40 right-32 h-1.5 w-1.5 rounded-full bg-white opacity-40" />
@@ -141,7 +141,7 @@ export default async function ResultPage({ params, searchParams }: ResultPagePro
               <Link
                 href="/"
                 className="mt-6 block w-full rounded-2xl py-4 font-bold text-white shadow-lg transition hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)", border: "1px solid rgba(255,255,255,0.2)" }}
+                style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", border: "1px solid rgba(255,255,255,0.2)" }}
               >
                 ← {m.back}
               </Link>

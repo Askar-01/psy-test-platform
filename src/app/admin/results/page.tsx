@@ -92,11 +92,11 @@ export default async function AdminResultsPage({
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       <div className="border-b border-white/60 bg-white/70 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-pink-500 text-lg shadow-md">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-lg shadow-md">
               🧠
             </div>
             <div>
@@ -139,8 +139,8 @@ export default async function AdminResultsPage({
             href="/admin/results?page=1"
             className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
               !classFilter
-                ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-md"
-                : "bg-white text-gray-600 shadow-sm hover:bg-purple-50 hover:text-purple-600"
+                ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md"
+                : "bg-white text-gray-600 shadow-sm hover:bg-blue-50 hover:text-blue-600"
             }`}
           >
             Barchasi
@@ -151,8 +151,8 @@ export default async function AdminResultsPage({
               href={buildUrl(1, cls ?? undefined)}
               className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
                 classFilter === cls
-                  ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-md"
-                  : "bg-white text-gray-600 shadow-sm hover:bg-purple-50 hover:text-purple-600"
+                  ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md"
+                  : "bg-white text-gray-600 shadow-sm hover:bg-blue-50 hover:text-blue-600"
               }`}
             >
               {cls}
@@ -192,7 +192,7 @@ export default async function AdminResultsPage({
                     };
 
                     return (
-                      <tr key={item.id} className="group transition hover:bg-purple-50/50">
+                      <tr key={item.id} className="group transition hover:bg-blue-50/50">
                         <td className="px-5 py-4 text-xs text-gray-400">{from + index + 1}</td>
                         <td className="px-5 py-4">
                           <span className="font-semibold text-gray-900">{item.student_name || "—"}</span>
@@ -224,7 +224,7 @@ export default async function AdminResultsPage({
                         <td className="px-5 py-4">
                           <Link
                             href={`/admin/results/${item.id}`}
-                            className="rounded-xl bg-gradient-to-r from-violet-500 to-pink-500 px-4 py-2 text-xs font-bold text-white opacity-0 shadow-md transition group-hover:opacity-100"
+                            className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-2 text-xs font-bold text-white opacity-0 shadow-md transition group-hover:opacity-100"
                           >
                             Ko'rish →
                           </Link>
@@ -259,7 +259,7 @@ export default async function AdminResultsPage({
                   className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
                     currentPage === 1
                       ? "pointer-events-none text-gray-300"
-                      : "text-gray-600 hover:bg-purple-50 hover:text-purple-600"
+                      : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
                   }`}
                 >
                   ←
@@ -273,8 +273,8 @@ export default async function AdminResultsPage({
                       href={buildUrl(p as number, classFilter)}
                       className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
                         p === currentPage
-                          ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-md"
-                          : "text-gray-600 hover:bg-purple-50 hover:text-purple-600"
+                          ? "bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md"
+                          : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
                       }`}
                     >
                       {p}
@@ -286,7 +286,7 @@ export default async function AdminResultsPage({
                   className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
                     currentPage === totalPages
                       ? "pointer-events-none text-gray-300"
-                      : "text-gray-600 hover:bg-purple-50 hover:text-purple-600"
+                      : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
                   }`}
                 >
                   →

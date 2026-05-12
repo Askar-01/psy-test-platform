@@ -25,7 +25,7 @@ type AnswerItem = {
 const THINKING_TYPES = [
   { key: "P-Á", label: "Predmetli-amaliy fikrlash", icon: "🔧", color: "from-amber-400 to-orange-500", bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", questions: [1,6,11,16,21,26,31,36],
     interpretation: `Predmetli-amaliy fikrlash isker odamlarga xos. Ularni "Oltin qo'llar" deb atashadi. Ular harakat orqali ma'lumotlarni yaxshiroq o'zlashtiradi. Ular mashina haydaydi, stanoklarning yonida turadi, kompyuterlarni yig'adi.` },
-  { key: "A-S", label: "Abstrakt-simvolik fikrlash", icon: "🔢", color: "from-violet-400 to-purple-600", bg: "bg-violet-50", border: "border-violet-200", text: "text-violet-700", questions: [2,7,12,17,22,27,32,37],
+  { key: "A-S", label: "Abstrakt-simvolik fikrlash", icon: "🔢", color: "from-violet-400 to-purple-600", bg: "bg-violet-50", border: "border-violet-200", text: "text-blue-700", questions: [2,7,12,17,22,27,32,37],
     interpretation: `Fiziklar, matematiklar, iqtisodchilar, dasturchilar, analitiklar abstrakt-simvolik fikrlashga ega. Matematik kodlar, formulalar yordamida ma'lumotlarni o'zlashtira oladi.` },
   { key: "S-L", label: "So'z-mantiqiy fikrlash", icon: "📝", color: "from-sky-400 to-blue-600", bg: "bg-sky-50", border: "border-sky-200", text: "text-sky-700", questions: [3,8,13,18,23,28,33,38],
     interpretation: `Olim, o'qituvchi, tarjimon, yozuvchi, filolog, jurnalist — mantiqiy fikrlash orqali o'z fikrlarini shakllantirb, xalqqa yetkazishi mumkin.` },
@@ -87,7 +87,7 @@ export default async function SubmissionDetailPage({ params }: SubmissionDetailP
   });
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       <div className="mx-auto max-w-4xl px-6 py-10">
 
         {/* Header */}
@@ -123,9 +123,9 @@ export default async function SubmissionDetailPage({ params }: SubmissionDetailP
           {[
             { label: "Auto ball", value: submission?.auto_score ?? 0, color: "text-gray-900" },
             { label: "Manual ball", value: submission?.manual_score ?? 0, color: "text-blue-600" },
-            { label: "Umumiy ball", value: submission?.total_score ?? 0, color: "text-violet-700", highlight: true },
+            { label: "Umumiy ball", value: submission?.total_score ?? 0, color: "text-blue-700", highlight: true },
           ].map((item) => (
-            <div key={item.label} className={`rounded-2xl p-5 text-center shadow-sm ${item.highlight ? "bg-gradient-to-br from-violet-50 to-pink-50 border-2 border-violet-200" : "bg-white"}`}>
+            <div key={item.label} className={`rounded-2xl p-5 text-center shadow-sm ${item.highlight ? "bg-gradient-to-br from-blue-50 to-slate-50 border-2 border-blue-200" : "bg-white"}`}>
               <p className="text-xs text-gray-400">{item.label}</p>
               <p className={`mt-1 text-3xl font-black ${item.color}`}>{item.value}</p>
             </div>
@@ -134,7 +134,7 @@ export default async function SubmissionDetailPage({ params }: SubmissionDetailP
 
         {/* Thinking types analysis */}
         <div className="mb-6 overflow-hidden rounded-3xl bg-white shadow-md">
-          <div className="bg-gradient-to-r from-violet-500 to-pink-500 px-6 py-4">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
             <h2 className="font-black text-white">🧠 Fikrlash turlari tahlili</h2>
           </div>
           <div className="p-6 space-y-4">
@@ -203,7 +203,7 @@ export default async function SubmissionDetailPage({ params }: SubmissionDetailP
                       <p className="text-sm font-medium text-gray-600">Manual ball:</p>
                       <ManualScoreInput answerId={answer.id} defaultValue={answer.manual_score ?? 0} />
                     </div>
-                    <p className="text-sm text-gray-500">Yakuniy: <span className="font-bold text-violet-700">{answer.final_score ?? 0}</span></p>
+                    <p className="text-sm text-gray-500">Yakuniy: <span className="font-bold text-blue-700">{answer.final_score ?? 0}</span></p>
                   </div>
                 </div>
               );
