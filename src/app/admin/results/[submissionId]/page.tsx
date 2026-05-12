@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import ManualScoreInput from "../../../../components/manual-score-input";
 import { createSupabaseServerClient } from "../../../../lib/supabase-server";
