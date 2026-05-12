@@ -85,7 +85,7 @@ export default async function TestDetailPage({ params }: TestPageProps) {
                     placeholder="Ism familiyangizni kiriting"
                     required
                     className="w-full rounded-2xl px-5 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:ring-2"
-                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", focusRingColor: "#3b82f6" }}
+                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
                   />
                 </div>
 
