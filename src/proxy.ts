@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAdminSession } from "./lib/admin-session";
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/admin")) {
@@ -10,10 +11,14 @@ export function proxy(req: NextRequest) {
     }
 
     const token = req.cookies.get("admin_token")?.value;
-    const validToken = process.env.ADMIN_SECRET;
+    const valid = await verifyAdminSession(token);
 
-    if (!token || token !== validToken) {
-      return NextResponse.redirect(new URL("/admin/login", req.url));
+    if (!valid) {
+      const url = new URL("/admin/login", req.url);
+      const res = NextResponse.redirect(url);
+      // Eski yoki noto'g'ri tokenni darhol o'chiramiz
+      if (token) res.cookies.delete("admin_token");
+      return res;
     }
   }
 

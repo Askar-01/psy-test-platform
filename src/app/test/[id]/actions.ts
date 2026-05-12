@@ -1,7 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "../../../lib/supabase-server";
+import {
+  createSubmissionToken,
+  SUBMISSION_COOKIE_NAME,
+} from "../../../lib/submission-session";
+
 export async function startTest(formData: FormData) {
   const supabase = createSupabaseServerClient();
 
@@ -12,6 +18,17 @@ export async function startTest(formData: FormData) {
 
   if (!testId || !studentName || !className || !language) {
     throw new Error("Barcha maydonlarni to‘ldiring");
+  }
+
+  // Test mavjudligini tekshirish (orphan submission'larni oldini oladi)
+  const { data: testRow, error: testErr } = await supabase
+    .from("tests")
+    .select("id")
+    .eq("id", testId)
+    .single();
+
+  if (testErr || !testRow) {
+    throw new Error("Test topilmadi");
   }
 
   const { data, error } = await supabase
@@ -29,6 +46,18 @@ export async function startTest(formData: FormData) {
   if (error || !data) {
     throw new Error(error?.message || "Submission yaratilmadi");
   }
+
+  // Submission token'ni HttpOnly cookie'ga yozamiz — keyingi sahifalar
+  // (questions submit, result) faqat shu cookie bilan ochiladi.
+  const { token, maxAge } = await createSubmissionToken(data.id);
+  const cookieStore = await cookies();
+  cookieStore.set(SUBMISSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge,
+    path: "/",
+  });
 
   redirect(`/test/${testId}/questions?submission=${data.id}`);
 }

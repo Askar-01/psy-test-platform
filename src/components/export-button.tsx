@@ -1,6 +1,6 @@
 "use client";
 
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 type SubmissionItem = {
   id: string;
@@ -22,38 +22,50 @@ type ExportButtonProps = {
 };
 
 export default function ExportButton({ submissions }: ExportButtonProps) {
-  function handleExport() {
+  async function handleExport() {
     const rows = submissions.map((item) => {
       const testTitle = Array.isArray(item.tests)
         ? item.tests[0]?.title_uz
         : item.tests?.title_uz;
-
       return {
-        "O'quvchi": item.student_name || "-",
-        Sinf: item.class_name || "-",
-        Til: item.language?.toUpperCase() || "-",
-        Test: testTitle || "-",
-        Ball: item.total_score ?? 0,
-        Holat: item.status || "-",
-        Sana: item.created_at
+        student: item.student_name || "-",
+        class: item.class_name || "-",
+        lang: item.language?.toUpperCase() || "-",
+        test: testTitle || "-",
+        score: item.total_score ?? 0,
+        status: item.status || "-",
+        date: item.created_at
           ? new Date(item.created_at).toLocaleString("uz-UZ")
           : "-",
       };
     });
 
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Natijalar");
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet("Natijalar");
 
-    const colWidths = Object.keys(rows[0] || {}).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...rows.map((r) => String(r[key as keyof typeof r] ?? "").length)
-      ) + 2,
-    }));
-    ws["!cols"] = colWidths;
+    ws.columns = [
+      { header: "O'quvchi", key: "student", width: 24 },
+      { header: "Sinf",     key: "class",   width: 10 },
+      { header: "Til",      key: "lang",    width: 6  },
+      { header: "Test",     key: "test",    width: 28 },
+      { header: "Ball",     key: "score",   width: 8  },
+      { header: "Holat",    key: "status",  width: 14 },
+      { header: "Sana",     key: "date",    width: 20 },
+    ];
 
-    XLSX.writeFile(wb, `natijalar_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    ws.getRow(1).font = { bold: true };
+    rows.forEach((r) => ws.addRow(r));
+
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `natijalar_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (

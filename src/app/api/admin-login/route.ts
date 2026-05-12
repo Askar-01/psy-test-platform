@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import {
+  createAdminSession,
+  timingSafeEqualString,
+} from "../../../lib/admin-session";
 
 export async function POST(req: Request) {
   try {
@@ -13,19 +17,23 @@ export async function POST(req: Request) {
       );
     }
 
-    if (password !== adminSecret) {
-      return NextResponse.json(
-        { error: "Parol noto'g'ri" },
-        { status: 401 }
-      );
+    // Parolni timing-safe solishtirish
+    if (
+      typeof password !== "string" ||
+      !timingSafeEqualString(password, adminSecret)
+    ) {
+      return NextResponse.json({ error: "Parol noto'g'ri" }, { status: 401 });
     }
 
+    // Imzolangan, muddati cheklangan session token
+    const { token, maxAge } = await createAdminSession();
+
     const cookieStore = await cookies();
-    cookieStore.set("admin_token", adminSecret, {
+    cookieStore.set("admin_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 8, // 8 soat
+      maxAge,
       path: "/",
     });
 

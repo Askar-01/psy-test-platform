@@ -69,15 +69,11 @@ export default async function AdminResultsPage({
   if (classFilter) exportQuery = exportQuery.eq("class_name", classFilter);
   const { data: allSubmissions } = await exportQuery;
 
-  // Statistika
-  const { data: statsData } = await supabase
-    .from("submissions")
-    .select("status")
-    .then((res) => res);
-
-  const checked = statsData?.filter((s) => s.status === "checked").length ?? 0;
-  const pending = statsData?.filter((s) => s.status === "pending_review").length ?? 0;
-  const total = statsData?.length ?? 0;
+  const [{ count: total }, { count: pending }, { count: checked }] = await Promise.all([
+    supabase.from("submissions").select("*", { count: "exact", head: true }),
+    supabase.from("submissions").select("*", { count: "exact", head: true }).eq("status", "pending_review"),
+    supabase.from("submissions").select("*", { count: "exact", head: true }).eq("status", "checked"),
+  ]);
 
   function getPageNumbers(current: number, total: number): (number | "...")[] {
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);

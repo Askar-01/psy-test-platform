@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "../../../lib/supabase-server";
+import { verifyAdminSession } from "../../../lib/admin-session";
 
 export async function POST(req: Request) {
-  // Autentifikatsiya tekshiruvi
+  // Autentifikatsiya tekshiruvi (HMAC-imzolangan session token)
   const cookieStore = await cookies();
   const token = cookieStore.get("admin_token")?.value;
-  if (!token || token !== process.env.ADMIN_SECRET) {
+  const valid = await verifyAdminSession(token);
+  if (!valid) {
     return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 401 });
   }
 
@@ -20,6 +22,13 @@ export async function POST(req: Request) {
     if (!answerId) {
       return NextResponse.json(
         { error: "answerId topilmadi" },
+        { status: 400 }
+      );
+    }
+
+    if (!Number.isFinite(manualScore) || manualScore < -100 || manualScore > 100) {
+      return NextResponse.json(
+        { error: "manual_score -100 dan 100 gacha bo'lishi kerak" },
         { status: 400 }
       );
     }

@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from "../../../../lib/supabase-server";
 import { submitAnswers } from "./actions";
 
-type QuestionsPageProps = {
+type TestPageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ submission?: string }>;
 };
@@ -45,7 +45,13 @@ const SUBMIT_LABEL: Record<string, string> = {
   kaa: "Jawaplardy jiberiw 🚀",
 };
 
-export default async function QuestionsPage({ params, searchParams }: QuestionsPageProps) {
+const MULTI_HINT: Record<string, string> = {
+  uz: "Bir nechta variantni tanlash mumkin",
+  ru: "Можно выбрать несколько вариантов",
+  kaa: "Bir neshe variantty tańlawǵa boladı",
+};
+
+export default async function QuestionsPage({ params, searchParams }: TestPageProps) {
   const { id } = await params;
   const { submission } = await searchParams;
   const supabase = createSupabaseServerClient();
@@ -79,6 +85,7 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
   );
   const yesNoLabels = YES_NO_LABELS[language] ?? YES_NO_LABELS.uz;
   const submitLabel = SUBMIT_LABEL[language] ?? SUBMIT_LABEL.uz;
+  const multiHint = MULTI_HINT[language] ?? MULTI_HINT.uz;
   const total = questions?.length ?? 0;
 
   return (
@@ -108,7 +115,19 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
           background: #818cf8 !important;
           border-color: #818cf8 !important;
         }
-        .yes-label:hover, .no-label:hover, .option-label:hover {
+        .multi-label:has(input:checked) {
+          background: rgba(74, 222, 128, 0.18) !important;
+          border-color: #4ade80 !important;
+          color: #d1fae5 !important;
+        }
+        .multi-label:has(input:checked) .multi-box {
+          background: #4ade80 !important;
+          border-color: #4ade80 !important;
+        }
+        .multi-label:has(input:checked) .multi-tick {
+          opacity: 1 !important;
+        }
+        .yes-label:hover, .no-label:hover, .option-label:hover, .multi-label:hover {
           background: rgba(255,255,255,0.08) !important;
         }
       `}</style>
@@ -190,7 +209,7 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                       </div>
                     )}
 
-                    {/* KO'P TANLOVLI */}
+                    {/* BIR VARIANTLI (radio) */}
                     {question.type === "multiple_choice" && (
                       <div className="mt-5 space-y-2">
                         {question.options?.map((option) => {
@@ -203,6 +222,35 @@ export default async function QuestionsPage({ params, searchParams }: QuestionsP
                             >
                               <input type="radio" name={`question_${question.id}`} value={option.id} className="sr-only" />
                               <span className="option-circle h-4 w-4 shrink-0 rounded-full border-2 border-current transition-all" />
+                              {optionText || "—"}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* KO'P VARIANTLI (checkbox) */}
+                    {question.type === "multi_select" && (
+                      <div className="mt-5 space-y-2">
+                        <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>
+                          {multiHint}
+                        </p>
+                        {question.options?.map((option) => {
+                          const optionText = getLangText(option, language);
+                          return (
+                            <label
+                              key={option.id}
+                              className="multi-label flex cursor-pointer items-center gap-3 rounded-2xl px-5 py-3 text-sm transition-all"
+                              style={{ border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
+                            >
+                              <input type="checkbox" name={`question_${question.id}`} value={option.id} className="sr-only" />
+                              <span className="multi-box relative h-5 w-5 shrink-0 rounded-md border-2 border-current transition-all">
+                                <span
+                                  className="multi-tick absolute inset-0 flex items-center justify-center text-[14px] font-black text-white opacity-0 transition-opacity"
+                                >
+                                  ✓
+                                </span>
+                              </span>
                               {optionText || "—"}
                             </label>
                           );

@@ -1,14 +1,76 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "../../../../lib/supabase-server";
+import {
+  verifySubmissionToken,
+  SUBMISSION_COOKIE_NAME,
+} from "../../../../lib/submission-session";
 
 type ResultPageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ submission?: string }>;
 };
 
+const DENIED_MESSAGES: Record<string, { title: string; desc: string; back: string }> = {
+  uz: {
+    title: "Ruxsat yo'q",
+    desc: "Bu natijaga kirish ruxsatingiz yo'q. Test natijalarini faqat testni topshirgan o'quvchining o'zi (o'sha brauzerda) ko'ra oladi.",
+    back: "Bosh sahifaga qaytish",
+  },
+  ru: {
+    title: "Доступ запрещен",
+    desc: "У вас нет доступа к этому результату. Результаты теста может видеть только тот, кто его прошёл (в том же браузере).",
+    back: "На главную",
+  },
+  kaa: {
+    title: "Ruxsat joq",
+    desc: "Bul nátiyjege kiriw ruxsatıńız joq. Test nátiyjelerin tek testti tapsırǵan oqıwshınıń ózi kórip aladı.",
+    back: "Bas betke qaytıw",
+  },
+};
+
+function DeniedView({ lang }: { lang: string }) {
+  const m = DENIED_MESSAGES[lang as keyof typeof DENIED_MESSAGES] ?? DENIED_MESSAGES.uz;
+  return (
+    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0a0a2e 0%, #1a1a6e 40%, #2d1b8e 70%, #1e0a5c 100%)" }}>
+      <div className="relative flex min-h-screen items-center justify-center px-6">
+        <div className="w-full max-w-md text-center">
+          <div className="overflow-hidden rounded-3xl shadow-2xl" style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,100,100,0.3)" }}>
+            <div className="px-8 py-10" style={{ background: "rgba(255,80,80,0.1)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl text-5xl" style={{ background: "rgba(255,80,80,0.2)", border: "1px solid rgba(255,80,80,0.4)" }}>
+                🔒
+              </div>
+              <h1 className="mt-4 text-2xl font-black text-white">{m.title}</h1>
+            </div>
+            <div className="p-8">
+              <p className="leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>{m.desc}</p>
+              <Link
+                href="/"
+                className="mt-6 block w-full rounded-2xl py-4 font-bold text-white shadow-lg transition hover:opacity-90"
+                style={{ background: "linear-gradient(135deg, #4040cc, #9020cc)", border: "1px solid rgba(255,255,255,0.2)" }}
+              >
+                ← {m.back}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 export default async function ResultPage({ params, searchParams }: ResultPageProps) {
-  const { id } = await params;
+  await params; // id ishlatilmaydi, lekin Next.js Promise'ni resolve qilishni talab qiladi
   const { submission } = await searchParams;
+
+  // Submission token tekshiruvi
+  const cookieStore = await cookies();
+  const subToken = cookieStore.get(SUBMISSION_COOKIE_NAME)?.value;
+  const tokenOk = await verifySubmissionToken(submission, subToken);
+  if (!tokenOk) {
+    return <DeniedView lang="uz" />;
+  }
+
   const supabase = createSupabaseServerClient();
 
   const { data: sub } = await supabase
@@ -52,7 +114,6 @@ export default async function ResultPage({ params, searchParams }: ResultPagePro
       <div className="relative flex min-h-screen items-center justify-center px-6">
         <div className="w-full max-w-md text-center">
           <div className="overflow-hidden rounded-3xl shadow-2xl" style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
-            {/* Top banner */}
             <div className="px-8 py-10" style={{ background: "rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl text-5xl" style={{ background: "rgba(80,200,120,0.2)", border: "1px solid rgba(80,200,120,0.4)" }}>
                 ✅
