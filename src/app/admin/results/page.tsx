@@ -106,6 +106,12 @@ export default async function AdminResultsPage({
           </div>
           <div className="flex items-center gap-3">
             {allSubmissions && allSubmissions.length > 0 && <ExportButton submissions={allSubmissions} />}
+            <Link
+              href="/admin/tests/new"
+              className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-2 text-sm font-bold text-white shadow-md transition hover:opacity-90"
+            >
+              + Test qo&apos;shish
+            </Link>
             <LogoutButton />
           </div>
         </div>
