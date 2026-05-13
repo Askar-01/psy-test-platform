@@ -100,72 +100,72 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
     <main className="min-h-screen bg-white">
       <style>{`
         .yn-yes:has(input:checked) {
-          background: #ecfdf5 !important;
-          border-color: #10b981 !important;
-          color: #047857 !important;
+          background: #2563eb !important;
+          border-color: #2563eb !important;
+          color: #fff !important;
         }
         .yn-no:has(input:checked) {
-          background: #fef2f2 !important;
-          border-color: #ef4444 !important;
-          color: #b91c1c !important;
+          background: #18181b !important;
+          border-color: #18181b !important;
+          color: #facc15 !important;
         }
         .opt:has(input:checked) {
-          background: #eef2ff !important;
-          border-color: #6366f1 !important;
-          color: #4338ca !important;
+          background: #facc15 !important;
+          border-color: #18181b !important;
+          color: #18181b !important;
         }
         .opt:has(input:checked) .dot {
-          background: #6366f1 !important;
-          border-color: #6366f1 !important;
+          background: #18181b !important;
+          border-color: #18181b !important;
         }
         .opt:has(input:checked) .dot-inner {
           opacity: 1 !important;
+          background: #facc15 !important;
         }
         .multi:has(input:checked) {
-          background: #eef2ff !important;
-          border-color: #6366f1 !important;
-          color: #4338ca !important;
+          background: #2563eb !important;
+          border-color: #18181b !important;
+          color: #fff !important;
         }
         .multi:has(input:checked) .box {
-          background: #6366f1 !important;
-          border-color: #6366f1 !important;
+          background: #facc15 !important;
+          border-color: #facc15 !important;
         }
         .multi:has(input:checked) .tick {
           opacity: 1 !important;
+          color: #18181b !important;
         }
         .yn-yes:hover, .yn-no:hover, .opt:hover, .multi:hover {
-          background: #fafafa;
-          border-color: #d4d4d8;
+          border-color: #18181b;
         }
       `}</style>
 
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-100 opacity-30 blur-3xl" />
-      </div>
-
-      {/* Sticky header */}
-      <div className="sticky top-0 z-20 border-b border-zinc-100 bg-white/80 backdrop-blur-xl">
+      {/* Top header (sticky) */}
+      <div className="sticky top-0 z-20 border-b-2 border-zinc-900 bg-zinc-900 text-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <div className="min-w-0">
-            <p className="text-xs font-medium text-zinc-400">Psixologik test</p>
-            <h1 className="truncate text-base font-bold tracking-tight text-zinc-900">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-black uppercase tracking-widest text-yellow-400">
+              / Psixologik test
+            </p>
+            <h1 className="truncate text-base font-black uppercase tracking-tight">
               {testTitle || "Test"}
             </h1>
           </div>
-          <div className="shrink-0 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-bold text-zinc-700">
-            {total} savol
+          <div className="ml-4 shrink-0 border-2 border-yellow-400 bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-zinc-900">
+            {String(total).padStart(2, "0")} savol
           </div>
         </div>
+        <div className="h-1 w-full bg-yellow-400" />
       </div>
 
       <div className="relative mx-auto max-w-3xl px-6 py-10">
         {error && (
-          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div className="mb-6 border-2 border-red-500 bg-red-50 p-4 text-sm font-bold text-red-700">
             Xatolik: {error.message}
           </div>
         )}
 
-        <form action={submitAnswers} className="space-y-5">
+        <form action={submitAnswers} className="space-y-6">
           <input type="hidden" name="test_id" value={id} />
           <input type="hidden" name="submission_id" value={submission || ""} />
           <input type="hidden" name="language" value={language} />
@@ -177,95 +177,107 @@ export default async function QuestionsPage({ params, searchParams }: TestPagePr
               return (
                 <div
                   key={question.id}
-                  className="rounded-3xl border border-zinc-200 bg-white p-7 transition hover:border-zinc-300"
+                  className="border-2 border-zinc-900 bg-white"
                 >
-                  <div className="flex items-start gap-4">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-xs font-bold text-white tabular-nums">
-                      {question.order_no}
+                  {/* Question header */}
+                  <div className="flex items-center justify-between border-b-2 border-zinc-900 bg-zinc-900 px-5 py-2.5 text-white">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400">
+                      / Savol {String(question.order_no).padStart(2, "0")} / {String(total).padStart(2, "0")}
                     </span>
-                    <h2 className="pt-1 text-lg font-semibold leading-snug text-zinc-900">
-                      {questionText || "Savol matni yo'q"}
-                    </h2>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                      {question.type === "yes_no" && "Ha / Yo'q"}
+                      {question.type === "multiple_choice" && "1 variant"}
+                      {question.type === "multi_select" && "Ko'p variant"}
+                      {question.type === "text" && "Matnli"}
+                    </span>
                   </div>
 
-                  {/* HA / YO'Q */}
-                  {question.type === "yes_no" && (
-                    <div className="mt-5 ml-12 flex gap-3">
-                      <label className="yn-yes flex flex-1 cursor-pointer items-center justify-center rounded-2xl border border-zinc-200 bg-white px-6 py-3.5 text-sm font-semibold text-zinc-600 transition">
-                        <input type="radio" name={`question_${question.id}`} value="yes" className="sr-only" />
-                        {yesNoLabels.yes}
-                      </label>
-                      <label className="yn-no flex flex-1 cursor-pointer items-center justify-center rounded-2xl border border-zinc-200 bg-white px-6 py-3.5 text-sm font-semibold text-zinc-600 transition">
-                        <input type="radio" name={`question_${question.id}`} value="no" className="sr-only" />
-                        {yesNoLabels.no}
-                      </label>
-                    </div>
-                  )}
+                  <div className="p-6">
+                    <h2 className="text-xl font-black leading-snug text-zinc-900">
+                      {questionText || "Savol matni yo'q"}
+                    </h2>
 
-                  {/* BIR VARIANTLI */}
-                  {question.type === "multiple_choice" && (
-                    <div className="mt-5 ml-12 space-y-2">
-                      {question.options?.map((option) => {
-                        const optionText = getLangText(option, language);
-                        return (
-                          <label
-                            key={option.id}
-                            className="opt flex cursor-pointer items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition"
-                          >
-                            <input type="radio" name={`question_${question.id}`} value={option.id} className="sr-only" />
-                            <span className="dot relative h-5 w-5 shrink-0 rounded-full border-2 border-zinc-300 transition">
-                              <span className="dot-inner absolute inset-[5px] rounded-full bg-white opacity-0 transition" />
-                            </span>
-                            {optionText || "—"}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
+                    {/* HA / YO'Q */}
+                    {question.type === "yes_no" && (
+                      <div className="mt-6 grid grid-cols-2 gap-3">
+                        <label className="yn-yes flex cursor-pointer items-center justify-center border-2 border-zinc-300 bg-white px-6 py-4 text-sm font-black uppercase tracking-widest text-zinc-700 transition">
+                          <input type="radio" name={`question_${question.id}`} value="yes" className="sr-only" />
+                          ✓ {yesNoLabels.yes}
+                        </label>
+                        <label className="yn-no flex cursor-pointer items-center justify-center border-2 border-zinc-300 bg-white px-6 py-4 text-sm font-black uppercase tracking-widest text-zinc-700 transition">
+                          <input type="radio" name={`question_${question.id}`} value="no" className="sr-only" />
+                          ✗ {yesNoLabels.no}
+                        </label>
+                      </div>
+                    )}
 
-                  {/* KO'P VARIANTLI */}
-                  {question.type === "multi_select" && (
-                    <div className="mt-5 ml-12 space-y-2">
-                      <p className="text-xs font-medium text-zinc-400">{multiHint}</p>
-                      {question.options?.map((option) => {
-                        const optionText = getLangText(option, language);
-                        return (
-                          <label
-                            key={option.id}
-                            className="multi flex cursor-pointer items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition"
-                          >
-                            <input type="checkbox" name={`question_${question.id}`} value={option.id} className="sr-only" />
-                            <span className="box relative flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 border-zinc-300 transition">
-                              <span className="tick text-[12px] font-black text-white opacity-0 transition">✓</span>
-                            </span>
-                            {optionText || "—"}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
+                    {/* BIR VARIANTLI */}
+                    {question.type === "multiple_choice" && (
+                      <div className="mt-6 space-y-2">
+                        {question.options?.map((option) => {
+                          const optionText = getLangText(option, language);
+                          return (
+                            <label
+                              key={option.id}
+                              className="opt flex cursor-pointer items-center gap-3 border-2 border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-700 transition"
+                            >
+                              <input type="radio" name={`question_${question.id}`} value={option.id} className="sr-only" />
+                              <span className="dot relative h-5 w-5 shrink-0 border-2 border-zinc-400 transition">
+                                <span className="dot-inner absolute inset-[3px] bg-transparent opacity-0 transition" />
+                              </span>
+                              {optionText || "—"}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
 
-                  {/* MATNLI */}
-                  {question.type === "text" && (
-                    <textarea
-                      name={`question_${question.id}`}
-                      className="mt-5 ml-12 block w-[calc(100%-3rem)] min-h-[110px] rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                      placeholder={placeholder}
-                    />
-                  )}
+                    {/* KO'P VARIANTLI */}
+                    {question.type === "multi_select" && (
+                      <div className="mt-6 space-y-2">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                          ⓘ {multiHint}
+                        </p>
+                        {question.options?.map((option) => {
+                          const optionText = getLangText(option, language);
+                          return (
+                            <label
+                              key={option.id}
+                              className="multi flex cursor-pointer items-center gap-3 border-2 border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-700 transition"
+                            >
+                              <input type="checkbox" name={`question_${question.id}`} value={option.id} className="sr-only" />
+                              <span className="box relative flex h-5 w-5 shrink-0 items-center justify-center border-2 border-zinc-400 transition">
+                                <span className="tick text-[11px] font-black opacity-0 transition">✓</span>
+                              </span>
+                              {optionText || "—"}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* MATNLI */}
+                    {question.type === "text" && (
+                      <textarea
+                        name={`question_${question.id}`}
+                        className="mt-6 block w-full min-h-[120px] border-2 border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-blue-600"
+                        placeholder={placeholder}
+                      />
+                    )}
+                  </div>
                 </div>
               );
             })
           ) : (
-            <div className="rounded-3xl border border-dashed border-zinc-300 p-16 text-center text-zinc-400">
+            <div className="border-2 border-dashed border-zinc-300 p-16 text-center text-sm font-bold uppercase tracking-widest text-zinc-400">
               Savollar topilmadi
             </div>
           )}
 
-          <div className="sticky bottom-4 pt-2">
+          <div className="sticky bottom-4 pt-4">
             <button
               type="submit"
-              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-900 px-6 py-5 text-base font-semibold text-white shadow-2xl shadow-zinc-900/20 transition hover:bg-indigo-600 active:scale-[0.99]"
+              className="group flex w-full items-center justify-center gap-3 border-2 border-zinc-900 bg-yellow-400 py-5 text-sm font-black uppercase tracking-widest text-zinc-900 shadow-2xl shadow-zinc-900/30 transition hover:bg-zinc-900 hover:text-yellow-400"
             >
               {submitLabel}
               <span className="transition-transform group-hover:translate-x-1">→</span>
