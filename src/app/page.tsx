@@ -16,87 +16,86 @@ export default async function Home() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="min-h-screen" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1d4ed8 100%)" }}>
+    <main className="min-h-screen bg-white">
+      {/* Dekorativ shakllar */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute top-10 left-20 h-1 w-1 rounded-full bg-white opacity-50" />
-        <div className="absolute top-32 left-60 h-1.5 w-1.5 rounded-full bg-white opacity-30" />
-        <div className="absolute top-20 right-40 h-1 w-1 rounded-full bg-white opacity-60" />
-        <div className="absolute top-60 right-20 h-2 w-2 rounded-full bg-white opacity-25" />
-        <div className="absolute top-80 left-40 h-1 w-1 rounded-full bg-white opacity-40" />
-        <div className="absolute bottom-40 left-80 h-1.5 w-1.5 rounded-full bg-white opacity-30" />
-        <div className="absolute bottom-60 right-60 h-1 w-1 rounded-full bg-white opacity-50" />
-        <div className="absolute -top-20 left-1/2 h-96 w-96 rounded-full opacity-10 blur-3xl" style={{ background: "#3b82f6" }} />
-        <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full opacity-10 blur-3xl" style={{ background: "#1d4ed8" }} />
+        <div className="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-indigo-100 opacity-60 blur-3xl" />
+        <div className="absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-pink-100 opacity-50 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-amber-100 opacity-40 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-6 py-16">
-        <div className="text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl shadow-2xl" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)" }}>
-            <span className="text-4xl">🧠</span>
-          </div>
-          <div className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium text-white/70" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.15)" }}>
+      <div className="relative mx-auto max-w-5xl px-6 py-20">
+        {/* Header */}
+        <div className="mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-1.5 text-xs font-medium text-zinc-600 shadow-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
             Psixologik testlar platformasi
           </div>
-          <h1 className="mt-5 text-5xl font-black text-white">
-            O&apos;zingizni kashf eting
+          <h1 className="mt-6 text-6xl font-black tracking-tight text-zinc-900 sm:text-7xl">
+            O&apos;zingizni
+            <br />
+            <span className="text-indigo-600">kashf eting.</span>
           </h1>
-          <p className="mt-4 text-lg" style={{ color: "rgba(255,255,255,0.6)" }}>
-            Quyidagi testlardan birini tanlang va o&apos;zingiz haqingizda ko&apos;proq bilib oling
+          <p className="mt-6 max-w-2xl text-lg text-zinc-500">
+            Quyidagi testlardan birini tanlang va o&apos;zingiz haqingizda yangi narsalarni biling.
+            Hammasi anonim, natijalar faqat siz uchun.
           </p>
         </div>
 
         {error && (
-          <div className="mt-8 rounded-2xl border border-red-400 bg-red-900/30 p-4 text-red-300">
+          <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
             Xatolik: {error.message}
           </div>
         )}
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+        {/* Testlar grid */}
+        <div className="grid gap-4 sm:grid-cols-2">
           {tests && tests.length > 0 ? (
             tests.map((test: TestItem, i) => (
-              <Link key={test.id} href={`/test/${test.id}`} className="group block">
-                <div
-                  className="relative overflow-hidden rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-                  style={{
-                    background: "rgba(255,255,255,0.07)",
-                    backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                  }}
-                >
+              <Link key={test.id} href={`/test/${test.id}`} className="group">
+                <article className="relative h-full overflow-hidden rounded-3xl border border-zinc-200 bg-white p-7 transition-all duration-300 hover:border-indigo-400 hover:shadow-2xl hover:shadow-indigo-100">
                   <div className="flex items-start justify-between">
-                    <div className="rounded-2xl px-3 py-1.5 text-xs font-bold" style={{ background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.8)" }}>
-                      📋 Test #{i + 1}
-                    </div>
-                    <div className="rounded-xl px-3 py-1 text-xs font-medium opacity-0 transition group-hover:opacity-100" style={{ background: "rgba(59,130,246,0.4)", color: "white" }}>
-                      Boshlash →
-                    </div>
+                    <span className="text-sm font-bold text-zinc-300 tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 transition group-hover:bg-indigo-100 group-hover:text-indigo-700">
+                      Test
+                    </span>
                   </div>
 
-                  <h2 className="mt-4 text-xl font-black text-white">
+                  <h2 className="mt-8 text-2xl font-bold tracking-tight text-zinc-900 transition group-hover:text-indigo-600">
                     {test.title_uz || "Nomsiz test"}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
-                    {test.description_uz || "Tavsif yo'q"}
+                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-zinc-500">
+                    {test.description_uz || "Bu test haqida tavsif yo'q"}
                   </p>
 
-                  <div className="mt-5 inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-bold text-white transition group-hover:opacity-90" style={{ background: "rgba(59,130,246,0.3)", border: "1px solid rgba(59,130,246,0.5)" }}>
-                    Testni boshlash →
+                  <div className="mt-8 flex items-center gap-1.5 text-sm font-semibold text-indigo-600">
+                    Boshlash
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
                   </div>
 
-                  <div className="pointer-events-none absolute -bottom-10 -right-10 h-40 w-40 rounded-full opacity-0 blur-3xl transition group-hover:opacity-25" style={{ background: "#3b82f6" }} />
-                </div>
+                  <div className="pointer-events-none absolute -bottom-12 -right-12 h-32 w-32 rounded-full bg-indigo-500 opacity-0 blur-2xl transition group-hover:opacity-10" />
+                </article>
               </Link>
             ))
           ) : (
-            <div className="col-span-2 rounded-3xl p-10 text-center" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>
-              Hozircha testlar yo&apos;q
+            <div className="col-span-2 rounded-3xl border border-dashed border-zinc-300 p-16 text-center">
+              <p className="text-zinc-400">Hozircha testlar yo&apos;q</p>
             </div>
           )}
         </div>
 
-        <p className="mt-10 text-center text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>
-          Barcha testlar anonim • Natijalar faqat o&apos;zingiz uchun
-        </p>
+        {/* Footer */}
+        <div className="mt-20 flex items-center justify-between border-t border-zinc-100 pt-8">
+          <p className="text-xs text-zinc-400">
+            Anonim · Bepul · Natijalar faqat o&apos;zingiz uchun
+          </p>
+          <div className="flex items-center gap-2 text-xs text-zinc-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            Tizim ishlamoqda
+          </div>
+        </div>
       </div>
     </main>
   );
